@@ -26,7 +26,7 @@ async def order(client, sym, side, price, type, qty):
     if trade_params['type'] == 'MARKET': del trade_params['price']
 
     res = await client.futures_create_order(**trade_params)
-    return print(res)
+    return
 
 
 if __name__ == '__main__':

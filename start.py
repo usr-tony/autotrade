@@ -76,7 +76,7 @@ async def signal(sym, client, ex_info):
         # 2 : bid
         # 3 : ask
         agg_index += rel_mid
-    
+
     agg_index /= len(symbols)   # aggregate index is the average calculated index of all symbols considered
     if abs(agg_index - 1) > 0.0004 and position['status'] == 0:
         if_reverse = True if agg_index > 0 else False
@@ -88,9 +88,10 @@ async def signal(sym, client, ex_info):
             if position['symbol'] != 'BTCUSDT':
                 side = 'BUY' if agg_index > 1 else 'SELL'
                 price = tables[position['symbol']]['a'][-1] if side == 'BUY' else tables[position['symbol']]['b'][-1]
-                min_qty = float(ex_info[position['symbol']]['minQty'])   # dictionary of symbol : {minQty: <minimum trade quantity>, tickSize: <contract tick size>}
+                min_qty = float(ex_info[position['symbol']]['minQty'])   
+                # dictionary of symbol : {minQty: <minimum trade quantity>, tickSize: <contract tick size>}
                 qty = floor(5.0 // (min_qty * price) + 1) * min_qty
-                await create_order(client, position['symbol'], side, price, 'LIMIT', qty)
+                await create_order(client, position['symbol'], side, price, 'MARKET', qty)
                 position['qty'] = qty
                 if agg_index > 1: 
                     position['status'] = 1
