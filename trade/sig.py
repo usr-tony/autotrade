@@ -4,11 +4,20 @@ from os import environ
 import time
 import asyncio
 from statistics import mean
-from symbols import symbols
 from bisect import bisect_left
 from get_ex_info import get_exchange_info
 from orders import create_order
 from math import floor
+
+symbols = [
+    'ETHUSDT',
+    'BTCUSDT',
+    'LTCUSDT',
+    'ADAUSDT',
+    'XRPUSDT',
+    'DOGEUSDT',
+    'BNBUSDT',
+]
 
 async def main():
     apikey = environ.get('apikey')
@@ -83,8 +92,11 @@ async def signal(sym, client, ex_info):
                 qty = floor(5.0 // (min_qty * price) + 1) * min_qty
                 await create_order(client, position['symbol'], side, price, 'LIMIT', qty)
                 position['qty'] = qty
-                if agg_index > 1: position['status'] = 1
-                elif agg_index < 1: position['status'] = -1
+                if agg_index > 1: 
+                    position['status'] = 1
+                elif agg_index < 1: 
+                    position['status'] = -1
+                
                 print(price, position, 'minqty:', min_qty, 'precision:', ex_info[position['symbol']]['tickSize'])
 
 
